@@ -103,30 +103,6 @@ export default function App() {
     setCurrentUser(null);
   };
 
-  // Quick switch user
-  const handleSwitchUser = (nik: string) => {
-    const target = allEmployees.find((e) => e.nik === nik);
-    if (target) {
-      StorageService.setCurrentUser(target);
-      setCurrentUser(target);
-      if (target.role === 'hr') {
-        setCurrentView('hr');
-      } else if (target.role === 'supervisor') {
-        setCurrentView('supervisor');
-      } else {
-        setCurrentView('karyawan');
-      }
-    }
-  };
-
-  // Reset data to seed
-  const handleResetData = () => {
-    if (window.confirm('Reset seluruh data absensi dan cuti kembali ke kondisi data awal (seed)?')) {
-      StorageService.resetToSeed();
-      refreshAllData();
-    }
-  };
-
   const handleMarkNotificationsRead = () => {
     StorageService.markAllNotificationsRead();
     setNotifications(StorageService.getNotifications());
@@ -194,9 +170,7 @@ export default function App() {
         currentView={currentView}
         onNavigate={setCurrentView}
         onOpenShiftInfo={() => setIsShiftModalOpen(true)}
-        onSwitchUser={handleSwitchUser}
         onLogout={handleLogout}
-        onResetData={handleResetData}
         allEmployees={allEmployees}
         notifications={notifications}
         onMarkAllNotificationsRead={handleMarkNotificationsRead}

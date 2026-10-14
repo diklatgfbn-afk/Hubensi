@@ -28,7 +28,7 @@ export const SEED_PERIODS: Period[] = [
 ];
 
 export const SEED_EMPLOYEES: Employee[] = [
-  { nik: 'NIK001', username: 'wakit', nama: 'WAKIT', grup_shift: 'A', status: 'aktif', role: 'supervisor', atasan_nik: null, password_hash: 'absensi123', created_at: '2026-01-01' },
+  { nik: 'NIK001', username: 'wakit', nama: 'WAKIT', grup_shift: 'A', status: 'aktif', role: 'hr', atasan_nik: null, password_hash: 'absensi123', created_at: '2026-01-01' },
   { nik: 'NIK002', username: 'lisna', nama: 'LISNA', grup_shift: 'A', status: 'aktif', role: 'karyawan', atasan_nik: 'NIK001', password_hash: 'absensi123', created_at: '2026-01-01' },
   { nik: 'NIK003', username: 'puput', nama: 'PUPUT', grup_shift: 'C', status: 'aktif', role: 'karyawan', atasan_nik: 'NIK001', password_hash: 'absensi123', created_at: '2026-01-01' },
   { nik: 'NIK004', username: 'fina', nama: 'FINA', grup_shift: 'C', status: 'aktif', role: 'karyawan', atasan_nik: 'NIK001', password_hash: 'absensi123', created_at: '2026-01-01' },
@@ -55,7 +55,7 @@ export const SEED_EMPLOYEES: Employee[] = [
   { nik: 'NIK025', username: 'rifah', nama: 'RIFAH', grup_shift: 'A', status: 'aktif', role: 'karyawan', atasan_nik: null, password_hash: 'absensi123', created_at: '2026-01-01' },
   { nik: 'NIK026', username: 'dika', nama: 'DIKA', grup_shift: 'A', status: 'aktif', role: 'karyawan', atasan_nik: null, password_hash: 'absensi123', created_at: '2026-01-01' },
   { nik: 'NIK027', username: 'tyas', nama: 'TYAS', grup_shift: 'A', status: 'aktif', role: 'karyawan', atasan_nik: null, password_hash: 'absensi123', created_at: '2026-01-01' },
-  { nik: 'NIK028', username: 'maruf', nama: 'MARUF', grup_shift: 'A', status: 'aktif', role: 'hr', atasan_nik: null, password_hash: 'absensi123', created_at: '2026-01-01' },
+  { nik: 'NIK028', username: 'maruf', nama: 'MARUF', grup_shift: 'A', status: 'aktif', role: 'karyawan', atasan_nik: 'NIK001', password_hash: 'absensi123', created_at: '2026-01-01' },
   { nik: 'NIK029', username: 'azmi', nama: 'AZMI', grup_shift: 'A', status: 'aktif', role: 'karyawan', atasan_nik: null, password_hash: 'absensi123', created_at: '2026-01-01' },
   { nik: 'NIK030', username: 'dhila', nama: 'dhila', grup_shift: 'A', status: 'aktif', role: 'karyawan', atasan_nik: null, password_hash: 'absensi123', created_at: '2026-01-01' },
   { nik: 'NIK031', username: 'sita', nama: 'SITA', grup_shift: 'C', status: 'aktif', role: 'karyawan', atasan_nik: null, password_hash: 'absensi123', created_at: '2026-01-01' },

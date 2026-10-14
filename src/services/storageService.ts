@@ -109,15 +109,37 @@ const INITIAL_NOTIFICATIONS: AppNotification[] = [
 export class StorageService {
   static getEmployees(): Employee[] {
     const raw = localStorage.getItem(STORAGE_KEYS.EMPLOYEES);
+    let list: Employee[] = [];
     if (!raw) {
-      this.setEmployees(SEED_EMPLOYEES);
-      return SEED_EMPLOYEES;
+      list = SEED_EMPLOYEES;
+      this.setEmployees(list);
+    } else {
+      try {
+        list = JSON.parse(raw);
+      } catch {
+        list = SEED_EMPLOYEES;
+      }
     }
-    try {
-      return JSON.parse(raw);
-    } catch {
-      return SEED_EMPLOYEES;
+
+    // Ensure WAKIT is HR and MARUF is karyawan as per requirements
+    let changed = false;
+    list = list.map((emp) => {
+      if (emp.nik === 'NIK001' && emp.role !== 'hr') {
+        changed = true;
+        return { ...emp, role: 'hr' as UserRole };
+      }
+      if (emp.nik === 'NIK028' && emp.role !== 'karyawan') {
+        changed = true;
+        return { ...emp, role: 'karyawan' as UserRole };
+      }
+      return emp;
+    });
+
+    if (changed) {
+      this.setEmployees(list);
     }
+
+    return list;
   }
 
   static setEmployees(employees: Employee[]) {
@@ -194,13 +216,15 @@ export class StorageService {
 
   static getCurrentUser(): Employee | null {
     const raw = localStorage.getItem(STORAGE_KEYS.CURRENT_USER);
+    const employees = this.getEmployees();
     if (!raw) {
-      // Default to supervisor 'wakit' or HR 'maruf' for immediate testing if not logged in
-      const defaultUser = SEED_EMPLOYEES.find((e) => e.username === 'wakit') || SEED_EMPLOYEES[0];
+      const defaultUser = employees.find((e) => e.username === 'wakit') || employees[0];
       return defaultUser;
     }
     try {
-      return JSON.parse(raw);
+      const parsed: Employee = JSON.parse(raw);
+      const latest = employees.find((e) => e.nik === parsed.nik);
+      return latest || parsed;
     } catch {
       return null;
     }

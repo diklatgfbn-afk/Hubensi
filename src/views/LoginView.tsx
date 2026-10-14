@@ -57,13 +57,6 @@ export const LoginView: React.FC<LoginViewProps> = ({ employees, onLogin }) => {
     }, 400);
   };
 
-  const handleQuickLogin = (uname: string) => {
-    const found = employees.find((emp) => emp.username === uname);
-    if (found) {
-      onLogin(found);
-    }
-  };
-
   return (
     <div className="relative min-h-screen flex flex-col justify-between overflow-hidden bg-slate-50 selection:bg-blue-100 selection:text-blue-900">
       {/* Interactive Background Layer */}
@@ -208,50 +201,6 @@ export const LoginView: React.FC<LoginViewProps> = ({ employees, onLogin }) => {
                 )}
               </button>
             </form>
-
-            {/* Quick Testing Accounts */}
-            <div className="mt-6 pt-5 border-t border-slate-100">
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-2">
-                Akses Cepat Pengujian:
-              </span>
-              <div className="grid grid-cols-2 gap-2 text-xs">
-                <button
-                  type="button"
-                  onClick={() => handleQuickLogin('maruf')}
-                  className="p-2.5 text-left border border-slate-200/90 rounded-xl hover:border-blue-500 hover:bg-blue-50/50 transition-all group"
-                >
-                  <div className="font-bold text-slate-900 group-hover:text-blue-700">MARUF (HR)</div>
-                  <div className="text-[10px] text-slate-500">Super Admin HR</div>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => handleQuickLogin('wakit')}
-                  className="p-2.5 text-left border border-slate-200/90 rounded-xl hover:border-emerald-500 hover:bg-emerald-50/50 transition-all group"
-                >
-                  <div className="font-bold text-slate-900 group-hover:text-emerald-700">WAKIT (SPV)</div>
-                  <div className="text-[10px] text-slate-500">Supervisor Tim</div>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => handleQuickLogin('lisna')}
-                  className="p-2.5 text-left border border-slate-200/90 rounded-xl hover:border-blue-500 hover:bg-blue-50/50 transition-all group"
-                >
-                  <div className="font-bold text-slate-900 group-hover:text-blue-700">LISNA</div>
-                  <div className="text-[10px] text-slate-500">Karyawan Grup A</div>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => handleQuickLogin('gupita')}
-                  className="p-2.5 text-left border border-slate-200/90 rounded-xl hover:border-rose-500 hover:bg-rose-50/50 transition-all group"
-                >
-                  <div className="font-bold text-slate-900 group-hover:text-rose-700">GUPITA</div>
-                  <div className="text-[10px] text-slate-500">Status Cuti Hamil</div>
-                </button>
-              </div>
-            </div>
 
             {/* Footer note */}
             <div className="mt-5 text-center text-[11px] text-slate-400">

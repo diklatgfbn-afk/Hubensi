@@ -4,7 +4,6 @@ import {
   Fingerprint,
   Bell,
   Clock,
-  RotateCcw,
   LogOut,
   User,
   Users,
@@ -22,9 +21,7 @@ interface NavbarProps {
   currentView: 'karyawan' | 'supervisor' | 'hr';
   onNavigate: (view: 'karyawan' | 'supervisor' | 'hr') => void;
   onOpenShiftInfo: () => void;
-  onSwitchUser: (nik: string) => void;
   onLogout: () => void;
-  onResetData: () => void;
   allEmployees: Employee[];
   notifications: AppNotification[];
   onMarkAllNotificationsRead: () => void;
@@ -36,9 +33,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   currentView,
   onNavigate,
   onOpenShiftInfo,
-  onSwitchUser,
   onLogout,
-  onResetData,
   allEmployees,
   notifications,
   onMarkAllNotificationsRead,
@@ -253,50 +248,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                     </p>
                   </div>
 
-                  {/* Switch user selector for quick testing */}
-                  <div className="px-4 py-2 border-b border-slate-100">
-                    <label className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block mb-1">
-                      Uji Sebagai Akun Lain:
-                    </label>
-                    <select
-                      value={currentUser.nik}
-                      onChange={(e) => {
-                        onSwitchUser(e.target.value);
-                        setIsUserMenuOpen(false);
-                      }}
-                      className="w-full text-xs border border-slate-200 rounded-lg p-1.5 bg-slate-50 text-slate-800"
-                    >
-                      <optgroup label="HR Admin">
-                        {allEmployees
-                          .filter((e) => e.role === 'hr')
-                          .map((e) => (
-                            <option key={e.nik} value={e.nik}>
-                              {e.nama} (HR Admin)
-                            </option>
-                          ))}
-                      </optgroup>
-                      <optgroup label="Supervisor">
-                        {allEmployees
-                          .filter((e) => e.role === 'supervisor')
-                          .map((e) => (
-                            <option key={e.nik} value={e.nik}>
-                              {e.nama} (Supervisor)
-                            </option>
-                          ))}
-                      </optgroup>
-                      <optgroup label="Karyawan">
-                        {allEmployees
-                          .filter((e) => e.role === 'karyawan')
-                          .slice(0, 15)
-                          .map((e) => (
-                            <option key={e.nik} value={e.nik}>
-                              {e.nama} ({e.nik})
-                            </option>
-                          ))}
-                      </optgroup>
-                    </select>
-                  </div>
-
                   <div className="py-1 text-xs">
                     <button
                       onClick={() => {
@@ -307,17 +258,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                     >
                       <Lock className="w-3.5 h-3.5 text-slate-400" />
                       <span>Ganti Kata Sandi</span>
-                    </button>
-
-                    <button
-                      onClick={() => {
-                        setIsUserMenuOpen(false);
-                        onResetData();
-                      }}
-                      className="w-full px-4 py-2 text-left hover:bg-slate-50 text-slate-600 flex items-center gap-2"
-                    >
-                      <RotateCcw className="w-3.5 h-3.5 text-slate-400" />
-                      <span>Reset Data ke Kondisi Awal</span>
                     </button>
 
                     <hr className="my-1 border-slate-100" />
