@@ -49,7 +49,11 @@ import {
   Clock,
   Shield,
   Database,
+  ExternalLink,
+  HeartPulse,
+  FileText,
 } from 'lucide-react';
+import { GOOGLE_FORM_LINKS } from '../data/formLinks';
 
 interface AdminDashboardProps {
   currentHR: Employee;
@@ -133,9 +137,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   const [deductTarget, setDeductTarget] = useState<Employee | null>(null);
   const [deductDays, setDeductDays] = useState(1);
   const [deductReason, setDeductReason] = useState('');
-
-  // Applications filter
-  const [appFilterStatus, setAppFilterStatus] = useState<'semua' | 'pending' | 'approved' | 'rejected'>('semua');
 
   const currentPeriod = useMemo(() => {
     return periods.find((p) => p.id === selectedPeriodId) || periods[0];
@@ -225,12 +226,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       2026
     );
   }, [inspectedEmp, selectedPeriodId, attendanceData, leavesData, balancesData]);
-
-  // Filtered applications
-  const filteredApps = useMemo(() => {
-    if (appFilterStatus === 'semua') return applications;
-    return applications.filter((a) => a.status === appFilterStatus);
-  }, [applications, appFilterStatus]);
 
   // Submit leave form
   const handleAddLeave = (e: React.FormEvent) => {
@@ -421,7 +416,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               Pusat Administrasi &amp; Absensi
             </h1>
             <p className="text-xs text-slate-500 mt-0.5">
-              Kelola import Excel, kuota cuti tahunan, approval pengajuan, dan rekonsiliasi data
+              Kelola import Excel, kuota cuti tahunan, formulir pengajuan resmi, dan rekonsiliasi data
             </p>
           </div>
 
@@ -501,7 +496,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             }`}
           >
             <Calendar className="w-3.5 h-3.5" />
-            <span>Pengajuan Masuk ({applications.filter((a) => a.status === 'pending').length})</span>
+            <span>Formulir Pengajuan</span>
           </button>
 
           <button
@@ -1036,134 +1031,107 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         {/* TAB 4: PENGAJUAN (APPLICATIONS APPROVAL WORKFLOW) */}
         {activeTab === 'pengajuan' && (
           <div className="space-y-4">
-            <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
-              <div className="p-5 border-b border-slate-200 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+            {/* Google Forms Official Links Banner */}
+            <div className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs space-y-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
                 <div>
-                  <h3 className="text-sm font-bold text-slate-900">
-                    Daftar Pengajuan Izin / Cuti / Sakit Karyawan
+                  <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-blue-700" />
+                    <span>Tautan Formulir Pengajuan Resmi (Google Form Perusahaan)</span>
                   </h3>
                   <p className="text-xs text-slate-500 mt-0.5">
-                    Persetujuan pengajuan otomatis menambahkan perizinan harian ke kalender absensi
+                    Karyawan mengisi permohonan melalui 3 Google Form resmi di bawah ini. Buka tautan untuk memeriksa formulir atau respon masuk.
                   </p>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <span className="text-xs text-slate-500 font-medium">Filter Status:</span>
-                  <select
-                    value={appFilterStatus}
-                    onChange={(e) => setAppFilterStatus(e.target.value as any)}
-                    className="border border-slate-200 rounded-xl px-3 py-1.5 text-xs bg-slate-50 text-slate-800"
-                  >
-                    <option value="semua">Semua Status</option>
-                    <option value="pending">Menunggu Persetujuan</option>
-                    <option value="approved">Disetujui</option>
-                    <option value="rejected">Ditolak</option>
-                  </select>
                 </div>
               </div>
 
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs text-slate-600">
-                  <thead className="bg-slate-50 border-b border-slate-200 text-[11px] font-semibold text-slate-500 uppercase tracking-wider">
-                    <tr>
-                      <th className="px-5 py-3">Nama Karyawan</th>
-                      <th className="px-4 py-3">Jenis</th>
-                      <th className="px-4 py-3">Periode Rentang</th>
-                      <th className="px-4 py-3">Alasan / Bukti</th>
-                      <th className="px-4 py-3 text-center">Status</th>
-                      <th className="px-4 py-3 text-center">Tindakan Admin</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100">
-                    {filteredApps.length === 0 ? (
-                      <tr>
-                        <td colSpan={6} className="px-5 py-8 text-center text-slate-400">
-                          Tidak ada pengajuan untuk filter status ini.
-                        </td>
-                      </tr>
-                    ) : (
-                      filteredApps.map((app) => (
-                        <tr key={app.id} className="hover:bg-slate-50">
-                          <td className="px-5 py-3 font-bold text-slate-900 whitespace-nowrap">
-                            {app.employee_name} ({app.nik})
-                          </td>
-                          <td className="px-4 py-3 whitespace-nowrap">
-                            <span className="font-semibold uppercase text-[10px] bg-blue-100 text-blue-800 px-2 py-0.5 rounded">
-                              {app.application_type}
-                            </span>
-                          </td>
-                          <td className="px-4 py-3 font-mono whitespace-nowrap">
-                            {app.start_date} s/d {app.end_date}
-                          </td>
-                          <td className="px-4 py-3 max-w-xs">
-                            <p className="text-slate-800">{app.reason}</p>
-                            {app.admin_note && (
-                              <p className="text-[11px] text-slate-500 mt-0.5 italic">
-                                Catatan: {app.admin_note}
-                              </p>
-                            )}
-                          </td>
-                          <td className="px-4 py-3 text-center whitespace-nowrap">
-                            <span
-                              className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${
-                                app.status === 'approved'
-                                  ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
-                                  : app.status === 'rejected'
-                                  ? 'bg-rose-50 text-rose-800 border-rose-200'
-                                  : 'bg-amber-50 text-amber-800 border-amber-200'
-                              }`}
-                            >
-                              {app.status === 'approved'
-                                ? 'Disetujui'
-                                : app.status === 'rejected'
-                                ? 'Ditolak'
-                                : 'Menunggu'}
-                            </span>
-                          </td>
-                          <td className="px-4 py-3 text-center whitespace-nowrap">
-                            {app.status === 'pending' ? (
-                              <div className="inline-flex items-center gap-1.5">
-                                <button
-                                  onClick={() => {
-                                    StorageService.updateApplicationStatus(app.id, 'approved', 'Disetujui oleh HRD');
-                                    onRefreshData();
-                                  }}
-                                  className="px-2.5 py-1 text-xs font-semibold text-emerald-800 bg-emerald-100 hover:bg-emerald-200 rounded-lg transition-colors cursor-pointer"
-                                >
-                                  Setujui
-                                </button>
-                                <button
-                                  onClick={() => {
-                                    const note = prompt('Alasan penolakan pengajuan:');
-                                    if (note) {
-                                      StorageService.updateApplicationStatus(app.id, 'rejected', note);
-                                      onRefreshData();
-                                    }
-                                  }}
-                                  className="px-2.5 py-1 text-xs font-semibold text-rose-800 bg-rose-100 hover:bg-rose-200 rounded-lg transition-colors cursor-pointer"
-                                >
-                                  Tolak
-                                </button>
-                              </div>
-                            ) : (
-                              <button
-                                onClick={() => {
-                                  if (confirm('Hapus riwayat pengajuan ini?')) {
-                                    StorageService.deleteApplication(app.id);
-                                    onRefreshData();
-                                  }
-                                }}
-                                className="p-1 text-slate-400 hover:text-rose-600 rounded"
-                              >
-                                <Trash2 className="w-3.5 h-3.5" />
-                              </button>
-                            )}
-                          </td>
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                {GOOGLE_FORM_LINKS.map((form) => (
+                  <div
+                    key={form.id}
+                    className="p-3.5 rounded-xl border border-slate-200 bg-slate-50/60 hover:bg-white hover:border-blue-300 transition-all flex flex-col justify-between"
+                  >
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between">
+                        <span
+                          className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                            form.color === 'emerald'
+                              ? 'bg-emerald-100 text-emerald-800'
+                              : form.color === 'amber'
+                              ? 'bg-amber-100 text-amber-800'
+                              : 'bg-blue-100 text-blue-800'
+                          }`}
+                        >
+                          {form.badge}
+                        </span>
+                      </div>
+                      <h4 className="font-bold text-xs text-slate-900 mt-1">{form.title}</h4>
+                      <p className="text-[11px] text-slate-500 leading-snug line-clamp-2">
+                        {form.description}
+                      </p>
+                    </div>
+
+                    <div className="pt-2.5 mt-2.5 border-t border-slate-200/60">
+                      <a
+                        href={form.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center gap-1.5 w-full py-1.5 px-3 text-xs font-semibold rounded-lg text-blue-700 bg-blue-50 hover:bg-blue-100 border border-blue-200 transition-all"
+                      >
+                        <span>Buka Google Form</span>
+                        <ExternalLink className="w-3.5 h-3.5" />
+                      </a>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Prosedur Rekonsiliasi & Validasi Pengajuan Google Form Resmi */}
+            <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-4">
+              <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+                <FileText className="w-4 h-4 text-blue-700" />
+                <h4 className="text-sm font-bold text-slate-900">
+                  Prosedur Rekonsiliasi &amp; Validasi Pengajuan Karyawan
+                </h4>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
+                  <div className="flex items-center gap-2 font-bold text-slate-900">
+                    <span className="w-5 h-5 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-[11px] font-bold">
+                      1
+                    </span>
+                    <span>Pengajuan Mandiri Karyawan</span>
+                  </div>
+                  <p className="text-slate-600 text-[11px] leading-relaxed">
+                    Karyawan mengisi permohonan melalui salah satu dari 3 tautan Google Form resmi di atas sesuai keperluannya (Cuti, KJK &amp; PSW, atau Izin &amp; Sakit).
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
+                  <div className="flex items-center gap-2 font-bold text-slate-900">
+                    <span className="w-5 h-5 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-[11px] font-bold">
+                      2
+                    </span>
+                    <span>Verifikasi Respon &amp; Dokumen</span>
+                  </div>
+                  <p className="text-slate-600 text-[11px] leading-relaxed">
+                    HRD dan Supervisor memeriksa respon Google Form / Spreadsheet untuk memastikan kelengkapan bukti (misal: surat sakit dokter, alasan dinas, atau izin mendesak).
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
+                  <div className="flex items-center gap-2 font-bold text-slate-900">
+                    <span className="w-5 h-5 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-[11px] font-bold">
+                      3
+                    </span>
+                    <span>Pencatatan ke Tab Kelola Cuti</span>
+                  </div>
+                  <p className="text-slate-600 text-[11px] leading-relaxed">
+                    Untuk permohonan cuti yang telah disetujui, HR menginput rentang tanggal pada tab <strong>Kelola Cuti</strong> agar otomatis tersinkron ke rekonsiliasi absensi 26–25.
+                  </p>
+                </div>
               </div>
             </div>
           </div>

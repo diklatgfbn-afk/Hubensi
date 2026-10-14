@@ -22,6 +22,7 @@ import { KaryawanDashboard } from './views/KaryawanDashboard';
 import { SupervisorDashboard } from './views/SupervisorDashboard';
 import { AdminDashboard } from './views/AdminDashboard';
 import { SupabaseModal } from './components/SupabaseModal';
+import { PengajuanModal } from './components/PengajuanModal';
 import { Lock, X, CheckCircle2 } from 'lucide-react';
 
 export default function App() {
@@ -38,6 +39,7 @@ export default function App() {
   const [notifications, setNotifications] = useState<AppNotification[]>([]);
   const [isShiftModalOpen, setIsShiftModalOpen] = useState(false);
   const [isSupabaseModalOpen, setIsSupabaseModalOpen] = useState(false);
+  const [isPengajuanModalOpen, setIsPengajuanModalOpen] = useState(false);
 
   // Change password modal
   const [showPasswordModal, setShowPasswordModal] = useState(false);
@@ -175,6 +177,7 @@ export default function App() {
         notifications={notifications}
         onMarkAllNotificationsRead={handleMarkNotificationsRead}
         onChangePasswordClick={() => setShowPasswordModal(true)}
+        onOpenPengajuanModal={() => setIsPengajuanModalOpen(true)}
       />
 
       {/* Main View Area */}
@@ -345,6 +348,16 @@ export default function App() {
             </form>
           </div>
         </div>
+      )}
+
+      {/* Global Pengajuan Google Form Modal */}
+      {currentUser && (
+        <PengajuanModal
+          isOpen={isPengajuanModalOpen}
+          onClose={() => setIsPengajuanModalOpen(false)}
+          employee={currentUser}
+          onRefreshData={refreshAllData}
+        />
       )}
     </div>
   );
